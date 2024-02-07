@@ -329,7 +329,8 @@ public final class Interface {
             if (!includedApplications.isEmpty() && !excludedApplications.isEmpty())
                 throw new BadConfigException(Section.INTERFACE, Location.INCLUDED_APPLICATIONS,
                         Reason.INVALID_KEY, null);
-            if (amneziaParams.isEmpty() || amneziaParams.size() != AmneziaKey.values().length) {
+            //plain old WG config also supported
+            if (!amneziaParams.isEmpty() && (amneziaParams.size() != AmneziaKey.values().length)) {
                 throw new BadConfigException(Section.INTERFACE, Location.AMNEZIA,
                         Reason.MISSING_ATTRIBUTE, null);
             }
