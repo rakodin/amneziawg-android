@@ -9,6 +9,7 @@ import android.os.Parcelable
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
 import androidx.databinding.ObservableArrayList
+import androidx.databinding.ObservableArrayMap
 import androidx.databinding.ObservableList
 import com.wireguard.android.BR
 import com.wireguard.config.Attribute
@@ -24,6 +25,8 @@ class InterfaceProxy : BaseObservable, Parcelable {
 
     @get:Bindable
     val includedApplications: ObservableList<String> = ObservableArrayList()
+
+    private val amneziaSurviveParams : ObservableArrayMap<String, String> = ObservableArrayMap();
 
     @get:Bindable
     var addresses: String = ""
@@ -89,6 +92,7 @@ class InterfaceProxy : BaseObservable, Parcelable {
         mtu = other.mtu.map { it.toString() }.orElse("")
         val keyPair = other.keyPair
         privateKey = keyPair.privateKey.toBase64()
+        amneziaSurviveParams.putAll(other.amneziaParamsStringMap)
     }
 
     constructor()
@@ -112,6 +116,7 @@ class InterfaceProxy : BaseObservable, Parcelable {
         if (listenPort.isNotEmpty()) builder.parseListenPort(listenPort)
         if (mtu.isNotEmpty()) builder.parseMtu(mtu)
         if (privateKey.isNotEmpty()) builder.parsePrivateKey(privateKey)
+        if (amneziaSurviveParams.isNotEmpty()) builder.parseAllAmneziaParams(amneziaSurviveParams)
         return builder.build()
     }
 

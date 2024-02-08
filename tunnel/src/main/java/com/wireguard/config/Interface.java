@@ -28,6 +28,8 @@ import java.util.stream.Collectors;
 
 import androidx.annotation.Nullable;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Represents the configuration for a WireGuard interface (an [Interface] block). Interfaces must
  * have a private key (used to initialize a {@code KeyPair}), and may optionally have several other
@@ -202,6 +204,13 @@ public final class Interface {
      */
     public Optional<Integer> getMtu() {
         return mtu;
+    }
+
+    public Map<String, String> getAmneziaParamsStringMap() {
+        return amneziaParams.entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey().name()
+                        , e -> e.getValue().toString()));
+
     }
 
     @Override
@@ -449,6 +458,13 @@ public final class Interface {
                         Reason.INVALID_VALUE, String.valueOf(mtu));
             this.mtu = mtu == 0 ? Optional.empty() : Optional.of(mtu);
             return this;
+        }
+
+        public Builder parseAllAmneziaParams(@NotNull Map<String, String> params) throws BadConfigException {
+           for (Map.Entry<String, String> e : params.entrySet()) {
+               parseAmneziaParam(e.getKey(), e.getValue());
+           }
+           return this;
         }
     }
 }
