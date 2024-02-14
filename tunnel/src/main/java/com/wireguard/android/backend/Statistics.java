@@ -25,7 +25,7 @@ public class Statistics {
     private final Map<Key, PeerStats> stats = new HashMap<>();
     private long lastTouched = SystemClock.elapsedRealtime();
 
-    Statistics() {
+    public Statistics() {
     }
 
     /**
@@ -39,7 +39,7 @@ public class Statistics {
      * @param latestHandshake   The timestamp of the latest handshake for the {@link com.wireguard.config.Peer}
      *                          referenced by the provided {@link Key}. The value is in epoch milliseconds.
      */
-    void add(final Key key, final long rxBytes, final long txBytes, final long latestHandshake) {
+    public void add(final Key key, final long rxBytes, final long txBytes, final long latestHandshake) {
         stats.put(key, new PeerStats(rxBytes, txBytes, latestHandshake));
         lastTouched = SystemClock.elapsedRealtime();
     }

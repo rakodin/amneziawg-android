@@ -36,7 +36,7 @@ import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.wireguard.android.Application
 import com.wireguard.android.R
-import com.wireguard.android.backend.GoBackend
+import org.amnezia.vpn.protocol.wireguard.GoBackend
 import com.wireguard.android.backend.Tunnel
 import com.wireguard.android.databinding.Keyed
 import com.wireguard.android.databinding.ObservableKeyedArrayList

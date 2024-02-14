@@ -18,7 +18,7 @@ import com.wireguard.android.Application
 import com.wireguard.android.R
 import com.wireguard.android.activity.BaseActivity
 import com.wireguard.android.activity.BaseActivity.OnSelectedTunnelChangedListener
-import com.wireguard.android.backend.GoBackend
+import org.amnezia.vpn.protocol.wireguard.GoBackend
 import com.wireguard.android.backend.Tunnel
 import com.wireguard.android.databinding.TunnelDetailFragmentBinding
 import com.wireguard.android.databinding.TunnelListItemBinding

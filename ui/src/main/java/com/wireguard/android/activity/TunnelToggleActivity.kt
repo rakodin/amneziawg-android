@@ -17,7 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import com.wireguard.android.Application
 import com.wireguard.android.QuickTileService
 import com.wireguard.android.R
-import com.wireguard.android.backend.GoBackend
+import org.amnezia.vpn.protocol.wireguard.GoBackend
 import com.wireguard.android.backend.Tunnel
 import com.wireguard.android.util.ErrorMessages
 import kotlinx.coroutines.launch

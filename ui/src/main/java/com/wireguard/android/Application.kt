@@ -18,7 +18,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import com.google.android.material.color.DynamicColors
 import com.wireguard.android.backend.Backend
-import com.wireguard.android.backend.GoBackend
+import org.amnezia.vpn.protocol.wireguard.GoBackend
 import com.wireguard.android.backend.WgQuickBackend
 import com.wireguard.android.configStore.FileConfigStore
 import com.wireguard.android.model.TunnelManager
@@ -76,7 +76,8 @@ class Application : android.app.Application() {
             }
         }
         if (backend == null) {
-            backend = GoBackend(applicationContext)
+            backend =
+                GoBackend(applicationContext)
             GoBackend.setAlwaysOnCallback { get().applicationScope.launch { get().tunnelManager.restoreState(true) } }
         }
         return backend

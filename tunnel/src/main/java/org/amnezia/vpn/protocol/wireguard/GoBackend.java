@@ -2,8 +2,7 @@
  * Copyright © 2017-2023 WireGuard LLC. All Rights Reserved.
  * SPDX-License-Identifier: Apache-2.0
  */
-
-package com.wireguard.android.backend;
+package org.amnezia.vpn.protocol.wireguard;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +11,11 @@ import android.os.ParcelFileDescriptor;
 import android.system.OsConstants;
 import android.util.Log;
 
+import com.wireguard.android.backend.Backend;
+import com.wireguard.android.backend.BackendException;
 import com.wireguard.android.backend.BackendException.Reason;
+import com.wireguard.android.backend.Statistics;
+import com.wireguard.android.backend.Tunnel;
 import com.wireguard.android.backend.Tunnel.State;
 import com.wireguard.android.util.SharedLibraryLoader;
 import com.wireguard.config.Config;
@@ -24,7 +27,6 @@ import com.wireguard.crypto.KeyFormatException;
 import com.wireguard.util.NonNullForAll;
 
 import java.net.InetAddress;
-import java.time.Instant;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -43,7 +45,7 @@ import androidx.collection.ArraySet;
 @NonNullForAll
 public final class GoBackend implements Backend {
     private static final int DNS_RESOLUTION_RETRIES = 10;
-    private static final String TAG = "WireGuard/GoBackend";
+    private static final String TAG = "Amnezia/GoBackend";
     @Nullable private static AlwaysOnCallback alwaysOnCallback;
     private static GhettoCompletableFuture<VpnService> vpnService = new GhettoCompletableFuture<>();
     private final Context context;

@@ -14,7 +14,7 @@ import com.wireguard.android.Application
 import com.wireguard.android.BuildConfig
 import com.wireguard.android.R
 import com.wireguard.android.backend.Backend
-import com.wireguard.android.backend.GoBackend
+import org.amnezia.vpn.protocol.wireguard.GoBackend
 import com.wireguard.android.backend.WgQuickBackend
 import com.wireguard.android.util.ErrorMessages
 import com.wireguard.android.util.lifecycleScope
