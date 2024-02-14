@@ -16,15 +16,19 @@ import com.wireguard.util.NonNullForAll;
 import java.net.InetAddress;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import androidx.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents the configuration for a WireGuard interface (an [Interface] block). Interfaces must
@@ -47,6 +51,8 @@ public final class Interface {
     private final Optional<Integer> listenPort;
     private final Optional<Integer> mtu;
 
+    private final Map<AmneziaKey, Integer> amneziaParams;
+
     private Interface(final Builder builder) {
         // Defensively copy to ensure immutability even if the Builder is reused.
         addresses = Collections.unmodifiableSet(new LinkedHashSet<>(builder.addresses));
@@ -55,6 +61,7 @@ public final class Interface {
         excludedApplications = Collections.unmodifiableSet(new LinkedHashSet<>(builder.excludedApplications));
         includedApplications = Collections.unmodifiableSet(new LinkedHashSet<>(builder.includedApplications));
         keyPair = Objects.requireNonNull(builder.keyPair, "Interfaces must have a private key");
+        amneziaParams = Collections.unmodifiableMap(new EnumMap<>(builder.amneziaParams));
         listenPort = builder.listenPort;
         mtu = builder.mtu;
     }
@@ -94,6 +101,10 @@ public final class Interface {
                     break;
                 case "privatekey":
                     builder.parsePrivateKey(attribute.getValue());
+                    break;
+                case "jc", "jmin", "jmax", "s1","s2", "h1", "h2", "h3", "h4":
+                    //amnezia params
+                    builder.parseAmneziaParam(attribute.getKey(), attribute.getValue());
                     break;
                 default:
                     throw new BadConfigException(Section.INTERFACE, Location.TOP_LEVEL,
@@ -195,6 +206,13 @@ public final class Interface {
         return mtu;
     }
 
+    public Map<String, String> getAmneziaParamsStringMap() {
+        return amneziaParams.entrySet().stream()
+                .collect(Collectors.toMap(e -> e.getKey().name()
+                        , e -> e.getValue().toString()));
+
+    }
+
     @Override
     public int hashCode() {
         int hash = 1;
@@ -245,6 +263,7 @@ public final class Interface {
         listenPort.ifPresent(lp -> sb.append("ListenPort = ").append(lp).append('\n'));
         mtu.ifPresent(m -> sb.append("MTU = ").append(m).append('\n'));
         sb.append("PrivateKey = ").append(keyPair.getPrivateKey().toBase64()).append('\n');
+        amneziaParams.forEach((k, v) -> sb.append(k.name()).append(" = ").append(v).append('\n'));
         return sb.toString();
     }
 
@@ -258,6 +277,7 @@ public final class Interface {
         final StringBuilder sb = new StringBuilder();
         sb.append("private_key=").append(keyPair.getPrivateKey().toHex()).append('\n');
         listenPort.ifPresent(lp -> sb.append("listen_port=").append(lp).append('\n'));
+        amneziaParams.forEach((k, v) -> sb.append(k.name().toLowerCase()).append("=").append(v).append('\n'));
         return sb.toString();
     }
 
@@ -279,6 +299,7 @@ public final class Interface {
         private Optional<Integer> listenPort = Optional.empty();
         // Defaults to not present.
         private Optional<Integer> mtu = Optional.empty();
+        private EnumMap<AmneziaKey, Integer> amneziaParams = new EnumMap<>(AmneziaKey.class);
 
         public Builder addAddress(final InetNetwork address) {
             addresses.add(address);
@@ -317,6 +338,11 @@ public final class Interface {
             if (!includedApplications.isEmpty() && !excludedApplications.isEmpty())
                 throw new BadConfigException(Section.INTERFACE, Location.INCLUDED_APPLICATIONS,
                         Reason.INVALID_KEY, null);
+            //plain old WG config also supported
+            if (!amneziaParams.isEmpty() && (amneziaParams.size() != AmneziaKey.values().length)) {
+                throw new BadConfigException(Section.INTERFACE, Location.AMNEZIA,
+                        Reason.MISSING_ATTRIBUTE, null);
+            }
             return new Interface(this);
         }
 
@@ -391,6 +417,14 @@ public final class Interface {
             }
         }
 
+        public Builder parseAmneziaParam(String paramKey, String paramValue) throws BadConfigException {
+            try {
+                return addAmneziaParam(paramKey, Integer.parseInt(paramValue));
+            } catch (IllegalArgumentException e) {
+                throw new BadConfigException(Section.INTERFACE, Location.AMNEZIA, e);
+            }
+        }
+
         public Builder parsePrivateKey(final String privateKey) throws BadConfigException {
             try {
                 return setKeyPair(new KeyPair(Key.fromBase64(privateKey)));
@@ -401,6 +435,12 @@ public final class Interface {
 
         public Builder setKeyPair(final KeyPair keyPair) {
             this.keyPair = keyPair;
+            return this;
+        }
+
+        public Builder addAmneziaParam(String key, final int value) throws IllegalArgumentException {
+            final AmneziaKey aKey = AmneziaKey.of(key);
+            this.amneziaParams.put(aKey, value);
             return this;
         }
 
@@ -418,6 +458,13 @@ public final class Interface {
                         Reason.INVALID_VALUE, String.valueOf(mtu));
             this.mtu = mtu == 0 ? Optional.empty() : Optional.of(mtu);
             return this;
+        }
+
+        public Builder parseAllAmneziaParams(@NotNull Map<String, String> params) throws BadConfigException {
+           for (Map.Entry<String, String> e : params.entrySet()) {
+               parseAmneziaParam(e.getKey(), e.getValue());
+           }
+           return this;
         }
     }
 }

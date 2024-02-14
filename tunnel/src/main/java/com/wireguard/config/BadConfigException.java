@@ -38,6 +38,11 @@ public class BadConfigException extends Exception {
     }
 
     public BadConfigException(final Section section, final Location location,
+                              final IllegalArgumentException cause) {
+        this(section, location, Reason.INVALID_VALUE, null, cause);
+    }
+
+    public BadConfigException(final Section section, final Location location,
                               @Nullable final CharSequence text,
                               final NumberFormatException cause) {
         this(section, location, Reason.INVALID_NUMBER, text, cause);
@@ -78,7 +83,8 @@ public class BadConfigException extends Exception {
         PERSISTENT_KEEPALIVE("PersistentKeepalive"),
         PRE_SHARED_KEY("PresharedKey"),
         PRIVATE_KEY("PrivateKey"),
-        PUBLIC_KEY("PublicKey");
+        PUBLIC_KEY("PublicKey"),
+        AMNEZIA("Amnezia");
 
         private final String name;
 

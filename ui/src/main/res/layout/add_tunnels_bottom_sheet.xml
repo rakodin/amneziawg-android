@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -35,9 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_sheet_item_height"
         android:layout_marginStart="@dimen/normal_margin"
-        android:layout_marginLeft="@dimen/normal_margin"
         android:layout_marginEnd="@dimen/normal_margin"
-        android:layout_marginRight="@dimen/normal_margin"
         android:nextFocusUp="@id/create_from_file"
         android:nextFocusDown="@id/create_empty"
         android:nextFocusForward="@id/create_empty"
@@ -51,7 +50,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/create_from_file"
-        app:rippleColor="?attr/colorSecondary" />
+        app:rippleColor="?attr/colorSecondary"
+        tools:visibility="gone" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/create_empty"
@@ -59,13 +59,12 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_sheet_item_height"
         android:layout_marginStart="@dimen/normal_margin"
-        android:layout_marginLeft="@dimen/normal_margin"
         android:layout_marginEnd="@dimen/normal_margin"
-        android:layout_marginRight="@dimen/normal_margin"
         android:nextFocusUp="@id/create_from_qrcode"
         android:text="@string/create_empty"
         android:textAlignment="viewStart"
         android:textColor="?attr/colorOnSurface"
+        android:visibility="invisible"
         app:icon="@drawable/ic_action_edit"
         app:iconPadding="@dimen/bottom_sheet_icon_padding"
         app:iconTint="?attr/colorSecondary"
@@ -73,6 +72,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/create_from_qrcode"
-        app:rippleColor="?attr/colorSecondary" />
+        app:rippleColor="?attr/colorSecondary"
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
